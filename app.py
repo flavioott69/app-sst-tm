@@ -10,7 +10,7 @@ from reportlab.platypus import HRFlowable, Image as RLImage, Paragraph, SimpleDo
 # Configuração da Página
 st.set_page_config(page_title="SST Vision | TM Engenharia", page_icon="👷‍♂️", layout="wide")
 
-# Estilização Visual Limpa e Direta (Padrão 5S)
+# Estilização Visual Limpa (Padrão 5S)
 st.markdown("""
     <style>
     .main { background-color: #F4F9F4; }
@@ -29,15 +29,14 @@ st.title("👷‍♂️ TM Engenharia e Serviços")
 st.subheader("Gerador de Laudos de SST & Inspeção de Campo")
 st.markdown("---")
 
-# Carregar unidades disponíveis
+# Carregar unidades disponíveis com segurança
+unidades_disponiveis = []
 if os.path.exists("assets/logos_unidades"):
     unidades_disponiveis = [
         f.split(".")[0].replace("_", " ").title()
         for f in os.listdir("assets/logos_unidades")
         if f.endswith((".png", ".jpg", ".jpeg"))
     ]
-else:
-    unidades_disponiveis = []
 
 # Barra lateral para configurações essenciais
 with st.sidebar:
@@ -66,13 +65,13 @@ col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     if unidades_disponiveis:
-        cliente_sel = st.selectbox("Unidade / Cliente", options=["Selecione..."] + unidades_disponive)
+        cliente_sel = st.selectbox("Unidade / Cliente", options=["Selecione..."] + unidades_disponiveis)
     else:
         cliente_sel = st.text_input("Unidade / Cliente", placeholder="Digite o nome da unidade")
 with col2:
     local_inspecao = st.text_input("Localização / Município", placeholder="Ex: Rio Verde - GO")
 with col3:
-    responsavel_tst = st.text_input("Técnico Responsável (TST)", placeholder="Seu Nome / MTE")
+    responsavel_tst = st.text_input("Técnico Responsável (TST)", placeholder="Flávio Otávio - MTE 029826/GO")
 with col4:
     data_inspecao = st.date_input("Data da Inspeção")
 
@@ -115,7 +114,7 @@ if imagem_obj is not None:
     if analisar:
         if not api_key:
             st.error("⚠️ Insira a chave da API do Gemini na barra lateral.")
-        elif cliente_sel == "Selecione..." or not responsavel_tst:
+        elif not cliente_sel or cliente_sel == "Selecione..." or not responsavel_tst:
             st.warning("⚠️ Preencha a unidade e o nome do técnico responsável.")
         else:
             with st.spinner("🔍 Analisando imagem e cruzando com Normas Regulamentadoras (NRs)..."):
