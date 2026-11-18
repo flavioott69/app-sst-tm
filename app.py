@@ -10,7 +10,7 @@ from reportlab.platypus import HRFlowable, Image as RLImage, Paragraph, SimpleDo
 # Configuração da Página
 st.set_page_config(page_title="SST Vision | TM Engenharia", page_icon="👷‍♂️", layout="wide")
 
-# Estilização Visual Limpa e Profissional (Estilo 5S)
+# Estilização Visual Limpa e Direta (Padrão 5S)
 st.markdown("""
     <style>
     .main { background-color: #F4F9F4; }
@@ -20,16 +20,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Garantir pastas
+# Garantir pastas necessárias
 os.makedirs("assets/logos_unidades", exist_ok=True)
 os.makedirs("temp", exist_ok=True)
 
-# Cabeçalho
+# Cabeçalho Principal
 st.title("👷‍♂️ TM Engenharia e Serviços")
 st.subheader("Gerador de Laudos de SST & Inspeção de Campo")
 st.markdown("---")
 
-# Definir unidades disponíveis com segurança
+# Carregar unidades disponíveis
 if os.path.exists("assets/logos_unidades"):
     unidades_disponiveis = [
         f.split(".")[0].replace("_", " ").title()
@@ -39,11 +39,11 @@ if os.path.exists("assets/logos_unidades"):
 else:
     unidades_disponiveis = []
 
-# Barra lateral para configurações e logos
+# Barra lateral para configurações essenciais
 with st.sidebar:
     if os.path.exists("assets/logo_tm.png"):
         st.image("assets/logo_tm.png", width=140)
-    st.header("⚙️ Painel de Controle")
+    st.header("⚙️ Configurações")
     
     api_key = st.secrets.get("GEMINI_API_KEY") or st.text_input("Chave API Gemini", type="password")
     
@@ -60,8 +60,8 @@ with st.sidebar:
         else:
             st.error("Informe o nome e envie o arquivo.")
 
-# Layout Principal em Página Única (Padrão 5S)
-st.markdown("### 📋 1. Informações da Inspeção")
+# Formulário Principal (Layout em Página Única, Igual ao 5S)
+st.markdown("### 📋 1. Dados da Inspeção")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -109,7 +109,7 @@ if imagem_obj is not None:
         st.image(imagem_obj, caption="Evidência Registrada", use_container_width=True)
     with col_btn:
         cliente_txt = cliente_sel if isinstance(cliente_sel, str) else "Unidade"
-        st.info(f"**Pronto para auditoria:**\n- **Cliente/Unidade:** {cliente_txt}\n- **Local:** {local_inspecao}\n- **TST:** {responsavel_tst}")
+        st.info(f"**Resumo da Auditoria:**\n- **Cliente/Unidade:** {cliente_txt}\n- **Local:** {local_inspecao}\n- **TST:** {responsavel_tst}")
         analisar = st.button("✨ Gerar Laudo Técnico com Inteligência Artificial", type="primary")
 
     if analisar:
