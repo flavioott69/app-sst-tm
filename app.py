@@ -102,7 +102,6 @@ if imagem_obj is not None:
         try:
           client = genai.Client(api_key=api_key)
 
-          # Prompt especialista alinhado com o que estruturamos no AI Studio
           prompt_sistema = (
               "Você é um Engenheiro de Segurança do Trabalho sênior e Auditor da TM Engenharia e Serviços. "
               "Analise esta imagem tirada em campo e o contexto fornecido: "
@@ -114,17 +113,15 @@ if imagem_obj is not None:
               "4. **AÇÃO CORRETIVA EXIGIDA (DETALHADA):** (Passo a passo prático e mandatório para correção da falha)."
           )
 
-          response = client.models.generate_content(model="gemini-2.5-flash", contents=[imagem_obj, observado := imagem_obj, prompt_sistema])
+          response = client.models.generate_content(model="gemini-2.5-flash", contents=[imagem_obj, prompt_sistema])
 
           st.success("✅ Laudo gerado com sucesso!")
           st.markdown("---")
           st.markdown("### 📄 Resultado Técnico")
           st.markdown(response.text)
 
-          # Salvando imagem temporária para o PDF
           temp_img = "temp/evidencia.jpg"
           imagem_obj.save(temp_img)
-
 
           def gerar_pdf(conteudo, cli, loc, resp, dt, img_p, logo_cli_p):
             pdf_name = f"temp/Relatorio_SST_{cli.replace(' ', '_')}.pdf"
@@ -137,7 +134,6 @@ if imagem_obj is not None:
             )
             st_corpo = ParagraphStyle("C", parent=styles["Normal"], fontSize=9.5, leading=13, spaceAfter=6)
 
-            # Cabeçalho com Logos
             logo_tm_path = "assets/logo_tm.png"
             l_esq = (
                 RLImage(logo_tm_path, width=90, height=35)
